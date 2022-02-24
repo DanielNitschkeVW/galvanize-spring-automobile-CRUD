@@ -165,12 +165,10 @@ public class AutosControllerTest {
     void updateAuto_withObject_returnsAuto() throws Exception {
         // Given
         Automobile auto = new Automobile(1985, "Volkswagen", "Käfer", "VWWOBKäfer");
-        Automobile resultAuto = new Automobile(1985, "Volkswagen", "Käfer", "VWWOBKäfer");
-        resultAuto.setColor("GREEN");
-        resultAuto.setOwner("me");
+        auto.setColor("GREEN");
+        auto.setOwner("me");
         when(autosService.updateAuto(anyString(),anyString(),anyString()))
-        .thenReturn(resultAuto);
-
+        .thenReturn(auto);
 
         // When
         mockMvc.perform(patch("/api/autos/" + auto.getVin())
@@ -179,8 +177,8 @@ public class AutosControllerTest {
 
                 // Then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("color").value("GREEN"))
-                .andExpect(jsonPath("owner").value("me"));
+                .andExpect(jsonPath("color").value(auto.getColor()))
+                .andExpect(jsonPath("owner").value(auto.getOwner()));
     }
 
     // Delete: /api/autos/{vin} Response 202 delete request accepted
@@ -203,7 +201,7 @@ public class AutosControllerTest {
         doThrow(new AutomobileNotFoundException()).when(autosService).deleteAuto(anyString());
 
         // When
-        mockMvc.perform(delete("/api/autos/ExistingVIN"))
+        mockMvc.perform(delete("/api/autos/nonExistingVIN"))
 
                 // Then
                 .andExpect(status().isNoContent());

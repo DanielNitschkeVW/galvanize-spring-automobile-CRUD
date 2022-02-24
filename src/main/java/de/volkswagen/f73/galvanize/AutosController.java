@@ -64,5 +64,5 @@ public class AutosController {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void notFoundAutoExceptionhandler(AutomobileNotFoundException e) {}
+    public void notFoundAutoExceptionHandler(AutomobileNotFoundException e) {}
 }
