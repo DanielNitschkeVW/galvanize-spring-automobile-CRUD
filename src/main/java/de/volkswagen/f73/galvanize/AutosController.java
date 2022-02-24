@@ -3,6 +3,7 @@ package de.volkswagen.f73.galvanize;
 import de.volkswagen.f73.galvanize.exceptions.AutomobileColorNotFoundException;
 import de.volkswagen.f73.galvanize.exceptions.AutomobileNotFoundException;
 import de.volkswagen.f73.galvanize.exceptions.InvalidAutomobileException;
+import de.volkswagen.f73.galvanize.exceptions.InvalidUpdateOwnerRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,6 +73,10 @@ public class AutosController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void invalidAutoExceptionHandler(InvalidAutomobileException e) {}
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void invalidUpdateOwnerRequestHandler(InvalidUpdateOwnerRequestException e) {}
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NO_CONTENT)

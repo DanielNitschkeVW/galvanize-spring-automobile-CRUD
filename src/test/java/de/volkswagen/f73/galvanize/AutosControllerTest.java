@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.volkswagen.f73.galvanize.exceptions.AutomobileColorNotFoundException;
 import de.volkswagen.f73.galvanize.exceptions.AutomobileNotFoundException;
 import de.volkswagen.f73.galvanize.exceptions.InvalidAutomobileException;
+import de.volkswagen.f73.galvanize.exceptions.InvalidUpdateOwnerRequestException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -44,9 +45,9 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(get("/api/autos"))
 
-                // Then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+            // Then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
 
     // Get: /api/autos Response 204 No content
@@ -58,8 +59,8 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(get("/api/autos/NotExistingVIN"))
 
-                // Then
-                .andExpect(status().isNoContent());
+            // Then
+            .andExpect(status().isNoContent());
     }
 
     // Get: /api/autos/{vin} Response 204 No autos found by that vin
@@ -71,8 +72,8 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(get("/api/autos"))
 
-                // Then
-                .andExpect(status().isNoContent());
+            // Then
+            .andExpect(status().isNoContent());
     }
 
     // Get: /api/autos?color={color} Response 200 successful operation
@@ -88,9 +89,9 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(get("/api/autos?color=RED"))
 
-                // Then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+            // Then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
 
     // Get: /api/autos?color={color} Response 204 No autos found by that color
@@ -103,8 +104,8 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(get("/api/autos?color=RED"))
 
-                // Then
-                .andExpect(status().isNoContent());
+            // Then
+            .andExpect(status().isNoContent());
     }
 
     // Get: /api/autos?make={make} Response 200 successful operation
@@ -120,9 +121,9 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(get("/api/autos?make=Volkswagen"))
 
-                // Then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+            // Then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
 
     // Get: /api/autos?make={make}?color={color} Response 200 successful operation
@@ -138,9 +139,9 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(get("/api/autos?color=RED&make=Volkswagen"))
 
-                // Then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+            // Then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
 
     // Post: /api/autos Response 200 Ok
@@ -152,12 +153,12 @@ public class AutosControllerTest {
 
         // When
         mockMvc.perform(post("/api/autos")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(auto)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(auto)))
 
-                // Then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("make").value("Volkswagen"));
+            // Then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("make").value("Volkswagen"));
     }
 
     // Post: /api/autos Response 400 Error bad request
@@ -168,11 +169,11 @@ public class AutosControllerTest {
 
         // When
         mockMvc.perform(post("/api/autos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{}"))
 
-                // Then
-                .andExpect(status().isBadRequest());
+            // Then
+            .andExpect(status().isBadRequest());
     }
 
     // Get: /api/autos/{vin} Response 200 successful operation
@@ -185,9 +186,9 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(get("/api/autos/" + auto.getVin()))
 
-                // Then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("vin").value(auto.getVin()));
+            // Then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("vin").value(auto.getVin()));
     }
 
     // Get: /api/autos/{vin} Response 204 No autos found by that vin
@@ -216,13 +217,13 @@ public class AutosControllerTest {
 
         // When
         mockMvc.perform(patch("/api/autos/" + auto.getVin())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"color\": \"GREEN\", \"owner\": \"me\"}"))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"color\": \"GREEN\", \"owner\": \"me\"}"))
 
-                // Then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("color").value(auto.getColor()))
-                .andExpect(jsonPath("owner").value(auto.getOwner()));
+            // Then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("color").value(auto.getColor()))
+            .andExpect(jsonPath("owner").value(auto.getOwner()));
     }
 
     // Patch: /api/autos/{vin} Response 204 No autos found by that vin
@@ -244,6 +245,21 @@ public class AutosControllerTest {
     }
 
     // Patch: /api/autos/{vin} Response 400 Bad request (no payload, no change, already done)
+    @Test
+    void updateAuto_withVin_badRequest_return400() throws Exception {
+        // Given
+        when(autosService.updateAuto(anyString(), isNull(), isNull()))
+            .thenThrow(InvalidUpdateOwnerRequestException.class);
+
+        // When
+        mockMvc.perform(patch("/api/autos/notExistingVIM")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{}"))
+
+        // Then
+            .andExpect(status().isBadRequest());
+        verify(autosService).updateAuto(anyString(), isNull(), isNull());
+    }
 
     // Delete: /api/autos/{vin} Response 202 delete request accepted
     @Test
@@ -253,8 +269,8 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(delete("/api/autos/ExistingVIN"))
 
-                // Then
-                .andExpect(status().isAccepted());
+            // Then
+            .andExpect(status().isAccepted());
         verify(autosService).deleteAuto(anyString());
     }
 
@@ -267,8 +283,8 @@ public class AutosControllerTest {
         // When
         mockMvc.perform(delete("/api/autos/nonExistingVIN"))
 
-                // Then
-                .andExpect(status().isNoContent());
+            // Then
+            .andExpect(status().isNoContent());
         verify(autosService).deleteAuto(anyString());
     }
 }
