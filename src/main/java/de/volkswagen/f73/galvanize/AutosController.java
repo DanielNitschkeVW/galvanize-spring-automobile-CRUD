@@ -20,8 +20,13 @@ public class AutosController {
             @RequestParam(required = false) String make) {
 
         AutosList autos;
-        if ((color == null || color.isEmpty()) && (make == null || make.isEmpty())) {
+        boolean invalidColor = color == null || color.isEmpty();
+        boolean invalidMake = make == null || make.isEmpty();
+        if (invalidColor && invalidMake) {
             autos = autosService.getAutos();
+        /*} else if (invalidColor) { */
+        } else if (invalidMake) {
+            autos = autosService.getAutosByColor(color);
         } else {
             autos = autosService.getAutos(color, make);
         }

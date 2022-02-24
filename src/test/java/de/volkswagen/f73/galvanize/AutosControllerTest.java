@@ -56,7 +56,22 @@ public class AutosControllerTest {
     }
 
     // Get: /api/autos?color={color} Response 200 successful operation
+    @Test
+    void getAutos_searchParamsColor_exists_returnsListOfAutos() throws Exception {
+        // Given
+        List<Automobile> autos = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            autos.add(new Automobile(2000+i, "Volkswagen", "ID.3", "TestVIN" + i));
+        }
+        when(autosService.getAutosByColor(anyString())).thenReturn(new AutosList(autos));
 
+        // When
+        mockMvc.perform(get("/api/autos?color=RED"))
+
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+    }
 
     // Get: /api/autos?make={make} Response 200 successful operation
 
