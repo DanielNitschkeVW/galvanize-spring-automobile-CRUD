@@ -52,6 +52,12 @@ public class AutosController {
         return autosService.updateAuto(vin, updateRequest.getColor(), updateRequest.getOwner());
     }
 
+    @DeleteMapping("/api/autos/{vin}")
+    public ResponseEntity deleteAuto(@PathVariable String vin) {
+        autosService.deleteAuto(vin);
+        return ResponseEntity.accepted().build();
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void invalidAutoExceptionHandler(InvalidAutomobileException e) {}
