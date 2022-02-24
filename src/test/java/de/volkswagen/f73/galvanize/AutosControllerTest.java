@@ -1,6 +1,9 @@
 package de.volkswagen.f73.galvanize;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.volkswagen.f73.galvanize.exceptions.AutomobileColorNotFoundException;
+import de.volkswagen.f73.galvanize.exceptions.AutomobileNotFoundException;
+import de.volkswagen.f73.galvanize.exceptions.InvalidAutomobileException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -222,6 +225,26 @@ public class AutosControllerTest {
                 .andExpect(jsonPath("owner").value(auto.getOwner()));
     }
 
+    // Patch: /api/autos/{vin} Response 204 No autos found by that vin
+    @Test
+    void updateAuto_withVin_notExists_return204() throws Exception {
+        // Given
+        doThrow(new AutomobileNotFoundException())
+            .when(autosService)
+            .updateAuto(anyString(), anyString(), anyString());
+
+        // When
+        mockMvc.perform(patch("/api/autos/notExistingVIM")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"color\": \"RED\", \"owner\": \"me\"}"))
+
+        // Then
+            .andExpect(status().isNoContent());
+        verify(autosService).updateAuto(anyString(), anyString(), anyString());
+    }
+
+    // Patch: /api/autos/{vin} Response 400 Bad request (no payload, no change, already done)
+
     // Delete: /api/autos/{vin} Response 202 delete request accepted
     @Test
     void deleteAuto_withVin_exists_return202() throws Exception {
@@ -248,9 +271,4 @@ public class AutosControllerTest {
                 .andExpect(status().isNoContent());
         verify(autosService).deleteAuto(anyString());
     }
-
-    /*
-        Patch: /api/autos/{vin} Response 204 No autos found by that vin
-        Patch: /api/autos/{vin} Response 400 Bad request (no payload, no change, already done)
-     */
 }

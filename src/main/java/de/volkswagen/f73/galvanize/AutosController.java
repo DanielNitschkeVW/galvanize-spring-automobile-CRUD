@@ -1,5 +1,8 @@
 package de.volkswagen.f73.galvanize;
 
+import de.volkswagen.f73.galvanize.exceptions.AutomobileColorNotFoundException;
+import de.volkswagen.f73.galvanize.exceptions.AutomobileNotFoundException;
+import de.volkswagen.f73.galvanize.exceptions.InvalidAutomobileException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +35,9 @@ public class AutosController {
             autos = autosService.getAutos(color, make);
         }
 
-        return autos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(autos);
+        return autos.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(autos);
     }
 
     @PostMapping("/api/autos")
@@ -43,14 +48,19 @@ public class AutosController {
     @GetMapping("/api/autos/{vin}")
     public ResponseEntity<Automobile> getAuto(@PathVariable String vin) {
         Automobile auto = autosService.getAuto(vin);
-        return auto == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(auto);
+        return auto == null
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(auto);
     }
 
     @PatchMapping("/api/autos/{vin}")
-    public Automobile updateAuto(
+    public ResponseEntity<Automobile> updateAuto(
             @PathVariable String vin,
-            @RequestBody UpdateOwnerRequest updateRequest) {
-        return autosService.updateAuto(vin, updateRequest.getColor(), updateRequest.getOwner());
+            @RequestBody UpdateOwnerRequest update) {
+        Automobile auto = autosService.updateAuto(vin, update.getColor(), update.getOwner());
+        return auto == null
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(auto);
     }
 
     @DeleteMapping("/api/autos/{vin}")
