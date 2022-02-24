@@ -95,7 +95,7 @@ public class AutosControllerTest {
     void getAutos_searchParamsColor_notExists_returns204() throws Exception {
         // Given
         doThrow(AutomobileColorNotFoundException.class)
-        .when(autosService).getAutosByColor(anyString());
+            .when(autosService).getAutosByColor(anyString());
 
         // When
         mockMvc.perform(get("/api/autos?color=RED"))
@@ -187,6 +187,20 @@ public class AutosControllerTest {
                 .andExpect(jsonPath("vin").value(auto.getVin()));
     }
 
+    // Get: /api/autos/{vin} Response 204 No autos found by that vin
+    @Test
+    void getAuto_withVin_notExists_returnNoContent() throws Exception {
+        // Given
+        doThrow(new AutomobileNotFoundException()).when(autosService).getAuto(anyString());
+
+        // When
+        mockMvc.perform(get("/api/autos/nonExistingVIN"))
+
+        // Then
+            .andExpect(status().isNoContent());
+        verify(autosService).getAuto(anyString());
+    }
+
     // Patch: /api/autos/{vin} Response 200 OK
     @Test
     void updateAuto_withObject_returnsAuto() throws Exception {
@@ -236,12 +250,6 @@ public class AutosControllerTest {
     }
 
     /*
-
-        Get: /api/autos?make={make} Response 204 No autos found by that vin
-
-        Get: /api/autos?make={make}?color={color} Response 204 No autos found by that vin
-
-        Get: /api/autos/{vin} Response 204 No autos found by that vin
         Patch: /api/autos/{vin} Response 204 No autos found by that vin
         Patch: /api/autos/{vin} Response 400 Bad request (no payload, no change, already done)
      */
