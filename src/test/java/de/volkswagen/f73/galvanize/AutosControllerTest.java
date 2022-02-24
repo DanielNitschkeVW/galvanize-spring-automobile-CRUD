@@ -160,6 +160,29 @@ public class AutosControllerTest {
                 .andExpect(jsonPath("vin").value(auto.getVin()));
     }
 
+    // Patch: /api/autos/{vin} Response 200 OK
+    @Test
+    void updateAuto_withObject_returnsAuto() throws Exception {
+        // Given
+        Automobile auto = new Automobile(1985, "Volkswagen", "Käfer", "VWWOBKäfer");
+        Automobile resultAuto = new Automobile(1985, "Volkswagen", "Käfer", "VWWOBKäfer");
+        resultAuto.setColor("GREEN");
+        resultAuto.setOwner("me");
+        when(autosService.updateAuto(anyString(),anyString(),anyString()))
+        .thenReturn(resultAuto);
+
+
+        // When
+        mockMvc.perform(patch("/api/autos/" + auto.getVin())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"color\": \"GREEN\", \"owner\": \"me\"}"))
+
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("color").value("GREEN"))
+                .andExpect(jsonPath("owner").value("me"));
+    }
+
     /*
         Post: /api/autos Response 400 Error bad request
         Get: /api/autos Response 204 No autos found by that vin
@@ -172,7 +195,6 @@ public class AutosControllerTest {
         Get: /api/autos?make={make}?color={color} Response 204 No autos found by that vin
 
         Get: /api/autos/{vin} Response 204 No autos found by that vin
-        Patch: /api/autos/{vin} Response 200 OK
         Patch: /api/autos/{vin} Response 204 No autos found by that vin
         Patch: /api/autos/{vin} Response 400 Bad request (no payload, no change, already done)
         Delete: /api/autos/{vin} Response 200 OK
