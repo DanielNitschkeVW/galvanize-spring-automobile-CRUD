@@ -145,6 +145,21 @@ public class AutosControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    // Get: /api/autos/{vin} Response 200 successful operation
+    @Test
+    void getAuto_withVin_returnsAuto() throws Exception {
+        // Given
+        Automobile auto = new Automobile(1985, "Volkswagen", "Käfer", "VWWOBKäfer");
+        when(autosService.getAuto(anyString())).thenReturn(auto);
+
+        // When
+        mockMvc.perform(get("/api/autos/" + auto.getVin()))
+
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("vin").value(auto.getVin()));
+    }
+
     /*
         Post: /api/autos Response 400 Error bad request
         Get: /api/autos Response 204 No autos found by that vin
@@ -156,7 +171,6 @@ public class AutosControllerTest {
 
         Get: /api/autos?make={make}?color={color} Response 204 No autos found by that vin
 
-        Get: /api/autos/{vin} Response 200 successful operation
         Get: /api/autos/{vin} Response 204 No autos found by that vin
         Patch: /api/autos/{vin} Response 200 OK
         Patch: /api/autos/{vin} Response 204 No autos found by that vin
