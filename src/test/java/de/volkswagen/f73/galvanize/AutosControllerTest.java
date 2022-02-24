@@ -41,6 +41,19 @@ public class AutosControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
+
+    // /api/autos Response 204 No content
+    @Test
+    void getAutos_noParams_exists_returnsEmptyListOfAutos() throws Exception {
+        // Given
+        when(autosService.getAutos()).thenReturn(new AutosList());
+
+        // When
+        mockMvc.perform(get("/api/autos"))
+
+                // Then
+                .andExpect(status().isNoContent());
+    }
     /*
         Post: /api/autos Response 200 Ok
         Post: /api/autos Response 400 Error bad request
