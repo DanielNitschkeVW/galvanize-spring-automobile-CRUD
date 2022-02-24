@@ -22,14 +22,17 @@ public class AutosController {
         AutosList autos;
         boolean invalidColor = color == null || color.isEmpty();
         boolean invalidMake = make == null || make.isEmpty();
+        
         if (invalidColor && invalidMake) {
             autos = autosService.getAutos();
-        /*} else if (invalidColor) { */
+        } else if (invalidColor) {
+            autos = autosService.getAutosByMake(make);
         } else if (invalidMake) {
             autos = autosService.getAutosByColor(color);
         } else {
             autos = autosService.getAutos(color, make);
         }
+
         return autos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(autos);
     }
 }
