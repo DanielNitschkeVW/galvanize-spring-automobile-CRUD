@@ -41,8 +41,9 @@ public class AutosController {
     }
 
     @GetMapping("/api/autos/{vin}")
-    public Automobile getAuto(@PathVariable String vin) {
-        return autosService.getAuto(vin);
+    public ResponseEntity<Automobile> getAuto(@PathVariable String vin) {
+        Automobile auto = autosService.getAuto(vin);
+        return auto == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(auto);
     }
 
     @PatchMapping("/api/autos/{vin}")
@@ -65,4 +66,8 @@ public class AutosController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void notFoundAutoExceptionHandler(AutomobileNotFoundException e) {}
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void notFoundAutoColorExceptionHandler(AutomobileColorNotFoundException e) {}
 }

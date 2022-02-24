@@ -48,6 +48,19 @@ public class AutosControllerTest {
 
     // Get: /api/autos Response 204 No content
     @Test
+    void getAutos_noParams_notExists_returnsEmptyListOfAutos() throws Exception {
+        // Given
+        when(autosService.getAutos()).thenReturn(new AutosList());
+
+        // When
+        mockMvc.perform(get("/api/autos/NotExistingVIN"))
+
+                // Then
+                .andExpect(status().isNoContent());
+    }
+
+    // Get: /api/autos/{vin} Response 204 No autos found by that vin
+    @Test
     void getAutos_noParams_exists_returnsEmptyListOfAutos() throws Exception {
         // Given
         when(autosService.getAutos()).thenReturn(new AutosList());
@@ -75,6 +88,20 @@ public class AutosControllerTest {
                 // Then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.automobiles", hasSize(5)));
+    }
+
+    // Get: /api/autos?color={color} Response 204 No autos found by that color
+    @Test
+    void getAutos_searchParamsColor_notExists_returns204() throws Exception {
+        // Given
+        doThrow(AutomobileColorNotFoundException.class)
+        .when(autosService).getAutosByColor(anyString());
+
+        // When
+        mockMvc.perform(get("/api/autos?color=RED"))
+
+                // Then
+                .andExpect(status().isNoContent());
     }
 
     // Get: /api/autos?make={make} Response 200 successful operation
@@ -209,11 +236,6 @@ public class AutosControllerTest {
     }
 
     /*
-        Post: /api/autos Response 400 Error bad request
-        Get: /api/autos Response 204 No autos found by that vin
-
-        Get: /api/autos?color={color} Response 200 Ok successful operation
-        Get: /api/autos?color={color} Response 204 No autos found by that vin
 
         Get: /api/autos?make={make} Response 204 No autos found by that vin
 
