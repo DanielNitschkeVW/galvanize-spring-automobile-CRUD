@@ -1,8 +1,8 @@
 package de.volkswagen.f73.galvanize;
 
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -15,8 +15,16 @@ public class AutosController {
     }
 
     @GetMapping("/api/autos")
-    public ResponseEntity<AutosList> getAutos() {
-        AutosList autos = autosService.getAutos();
+    public ResponseEntity<AutosList> getAutos(
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) String make) {
+
+        AutosList autos;
+        if ((color == null || color.isEmpty()) && (make == null || make.isEmpty())) {
+            autos = autosService.getAutos();
+        } else {
+            autos = autosService.getAutos(color, make);
+        }
         return autos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(autos);
     }
 }

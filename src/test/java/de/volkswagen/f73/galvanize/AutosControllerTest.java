@@ -42,7 +42,7 @@ public class AutosControllerTest {
                 .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
 
-    // /api/autos Response 204 No content
+    // Get: /api/autos Response 204 No content
     @Test
     void getAutos_noParams_exists_returnsEmptyListOfAutos() throws Exception {
         // Given
@@ -54,6 +54,31 @@ public class AutosControllerTest {
                 // Then
                 .andExpect(status().isNoContent());
     }
+
+    // Get: /api/autos?color={color} Response 200 successful operation
+
+
+    // Get: /api/autos?make={make} Response 200 successful operation
+
+
+    // Get: /api/autos?make={make}?color={color} Response 200 successful operation
+    @Test
+    void getAutos_searchParams_exists_returnsListOfAutos() throws Exception {
+        // Given
+        List<Automobile> autos = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            autos.add(new Automobile(2000+i, "Volkswagen", "ID.3", "TestVIN" + i));
+        }
+        when(autosService.getAutos(anyString(), anyString())).thenReturn(new AutosList(autos));
+
+        // When
+        mockMvc.perform(get("/api/autos?color=RED&make=Volkswagen"))
+
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.automobiles", hasSize(5)));
+    }
+
     /*
         Post: /api/autos Response 200 Ok
         Post: /api/autos Response 400 Error bad request
@@ -62,10 +87,8 @@ public class AutosControllerTest {
         Get: /api/autos?color={color} Response 200 Ok successful operation
         Get: /api/autos?color={color} Response 204 No autos found by that vin
 
-        Get: /api/autos?make={make} Response 200 successful operation
         Get: /api/autos?make={make} Response 204 No autos found by that vin
 
-        Get: /api/autos?make={make}?color={color} Response 200 successful operation
         Get: /api/autos?make={make}?color={color} Response 204 No autos found by that vin
 
         Get: /api/autos/{vin} Response 200 successful operation
