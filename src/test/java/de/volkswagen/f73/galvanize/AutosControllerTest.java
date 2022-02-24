@@ -186,8 +186,27 @@ public class AutosControllerTest {
     // Delete: /api/autos/{vin} Response 202 delete request accepted
     @Test
     void deleteAuto_withVin_exists_return202() throws Exception {
+        // Given
+
+        // When
         mockMvc.perform(delete("/api/autos/ExistingVIN"))
+
+                // Then
                 .andExpect(status().isAccepted());
+        verify(autosService).deleteAuto(anyString());
+    }
+
+    // Delete: /api/autos/{vin} Response 204 No autos found by that vin
+    @Test
+    void deleteAuto_withVin_notExists_returnNoContent() throws Exception {
+        // Given
+        doThrow(new AutomobileNotFoundException()).when(autosService).deleteAuto(anyString());
+
+        // When
+        mockMvc.perform(delete("/api/autos/ExistingVIN"))
+
+                // Then
+                .andExpect(status().isNoContent());
         verify(autosService).deleteAuto(anyString());
     }
 
@@ -205,8 +224,5 @@ public class AutosControllerTest {
         Get: /api/autos/{vin} Response 204 No autos found by that vin
         Patch: /api/autos/{vin} Response 204 No autos found by that vin
         Patch: /api/autos/{vin} Response 400 Bad request (no payload, no change, already done)
-
-        Delete: /api/autos/{vin} Response 202 Accepted
-        Delete: /api/autos/{vin} Response 204 No autos found by that vin
      */
 }
