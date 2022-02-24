@@ -130,6 +130,21 @@ public class AutosControllerTest {
                 .andExpect(jsonPath("make").value("Volkswagen"));
     }
 
+    // Post: /api/autos Response 400 Error bad request
+    @Test
+    void addAuto_badRequest_throwInvalidAutomobileException() throws Exception {
+        // Given
+        when(autosService.addAuto(any(Automobile.class))).thenThrow(InvalidAutomobileException.class);
+
+        // When
+        mockMvc.perform(post("/api/autos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+
+                // Then
+                .andExpect(status().isBadRequest());
+    }
+
     /*
         Post: /api/autos Response 400 Error bad request
         Get: /api/autos Response 204 No autos found by that vin

@@ -1,5 +1,6 @@
 package de.volkswagen.f73.galvanize;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,4 +39,8 @@ public class AutosController {
     public Automobile addAuto(@RequestBody Automobile auto) {
         return autosService.addAuto(auto);
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void invalidAutoExceptionHandler(InvalidAutomobileException e) {}
 }
