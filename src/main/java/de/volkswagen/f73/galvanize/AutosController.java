@@ -1,9 +1,7 @@
 package de.volkswagen.f73.galvanize;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AutosController {
@@ -22,7 +20,7 @@ public class AutosController {
         AutosList autos;
         boolean invalidColor = color == null || color.isEmpty();
         boolean invalidMake = make == null || make.isEmpty();
-        
+
         if (invalidColor && invalidMake) {
             autos = autosService.getAutos();
         } else if (invalidColor) {
@@ -34,5 +32,10 @@ public class AutosController {
         }
 
         return autos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(autos);
+    }
+
+    @PostMapping("/api/autos")
+    public Automobile addAuto(@RequestBody Automobile auto) {
+        return autosService.addAuto(auto);
     }
 }

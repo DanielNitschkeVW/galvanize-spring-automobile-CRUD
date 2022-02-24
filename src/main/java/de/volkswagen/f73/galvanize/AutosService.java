@@ -19,4 +19,8 @@ public class AutosService {
     public AutosList getAutosByMake(String make) {
         return null;
     }
+
+    public Automobile addAuto(Automobile automobile) {
+        return null;
+    }
 }

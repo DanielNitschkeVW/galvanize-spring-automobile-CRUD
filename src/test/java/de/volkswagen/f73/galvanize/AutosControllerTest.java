@@ -1,9 +1,11 @@
 package de.volkswagen.f73.galvanize;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,6 +25,8 @@ public class AutosControllerTest {
 
     @MockBean
     AutosService autosService;
+
+    ObjectMapper mapper = new ObjectMapper();
 
     // Get: /api/autos Response 200 Ok
     @Test
@@ -109,8 +113,24 @@ public class AutosControllerTest {
                 .andExpect(jsonPath("$.automobiles", hasSize(5)));
     }
 
+    // Post: /api/autos Response 200 Ok
+    @Test
+    void addAuto_valid_returnsAuto() throws Exception {
+        // Given
+        Automobile auto = new Automobile(1985, "Volkswagen", "Käfer", "VWWOBKäfer");
+        when(autosService.addAuto(any(Automobile.class))).thenReturn(auto);
+
+        // When
+        mockMvc.perform(post("/api/autos")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(auto)))
+
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("make").value("Volkswagen"));
+    }
+
     /*
-        Post: /api/autos Response 200 Ok
         Post: /api/autos Response 400 Error bad request
         Get: /api/autos Response 204 No autos found by that vin
 
