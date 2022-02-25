@@ -230,7 +230,7 @@ public class AutosControllerTest {
     @Test
     void updateAuto_withVin_notExists_return204() throws Exception {
         // Given
-        doThrow(new AutomobileNotFoundException())
+        doThrow(AutomobileNotFoundException.class)
             .when(autosService)
             .updateAuto(anyString(), anyString(), anyString());
 
@@ -248,8 +248,9 @@ public class AutosControllerTest {
     @Test
     void updateAuto_withVin_badRequest_return400() throws Exception {
         // Given
-        when(autosService.updateAuto(anyString(), isNull(), isNull()))
-            .thenThrow(InvalidUpdateOwnerRequestException.class);
+        doThrow(InvalidUpdateOwnerRequestException.class)
+            .when(autosService)
+            .updateAuto(anyString(), isNull(), isNull());
 
         // When
         mockMvc.perform(patch("/api/autos/notExistingVIM")
