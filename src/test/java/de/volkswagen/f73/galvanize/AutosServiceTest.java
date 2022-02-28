@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,9 @@ class AutosServiceTest {
     @Test
     void getAutos_noArgs_findAll() {
         when(autosRepository.findAll()).thenReturn(List.of(new Automobile(2000, "Volkswagen", "ID.3", "TestVIN")));
+
         AutosList autosList = autosService.getAutos();
+
         assertThat(autosList).isNotNull();
         assertThat(autosList.isEmpty()).isFalse();
     }
@@ -39,7 +42,9 @@ class AutosServiceTest {
     @Test
     void getAutos_findByColorAndMake() {
         when(autosRepository.findByColorAndMake(anyString(), anyString())).thenReturn(List.of(new Automobile(2000, "Volkswagen", "ID.3", "TestVIN")));
+
         AutosList autosList = autosService.getAutos(anyString(), anyString());
+
         assertThat(autosList).isNotNull();
         assertThat(autosList.isEmpty()).isFalse();
     }
@@ -47,7 +52,9 @@ class AutosServiceTest {
     @Test
     void getAutos_byColor() {
         when(autosRepository.findByColor(anyString())).thenReturn(List.of(new Automobile(2000, "Volkswagen", "ID.3", "TestVIN")));
+
         AutosList autosList = autosService.getAutosByColor(anyString());
+
         assertThat(autosList).isNotNull();
         assertThat(autosList.isEmpty()).isFalse();
     }
@@ -55,7 +62,9 @@ class AutosServiceTest {
     @Test
     void getAutosByMake() {
         when(autosRepository.findByMake(anyString())).thenReturn(List.of(new Automobile(2000, "Volkswagen", "ID.3", "TestVIN")));
+
         AutosList autosList = autosService.getAutosByMake(anyString());
+
         assertThat(autosList).isNotNull();
         assertThat(autosList.isEmpty()).isFalse();
     }
@@ -64,17 +73,37 @@ class AutosServiceTest {
     void addAuto_returnAutomobile() {
         Automobile auto = new Automobile(2000, "Volkswagen", "ID.3", "TestVIN");
         when(autosRepository.addAuto(any(Automobile.class))).thenReturn(auto);
+
         Automobile returnAuto = autosService.addAuto(auto);
+
         assertThat(auto).isNotNull();
         assertEquals(auto, returnAuto);
     }
 
     @Test
     void getAuto_byVin() {
+        Automobile auto = new Automobile(2000, "Volkswagen", "ID.3", "TestVIN");
+        when(autosRepository.findAutoByVin(anyString())).thenReturn(Optional.of(auto));
+
+        Automobile returnAuto = autosService.getAuto(auto.getVin());
+
+        assertThat(auto).isNotNull();
+        assertEquals(auto, returnAuto);
     }
 
     @Test
-    void updateAuto() {
+    void updateAuto_returnUpdatedAuto() {
+        Automobile originalAuto = new Automobile(2000, "Volkswagen", "ID.3", "TestVIN");
+        Automobile updatedAuto = new Automobile(2000, "Volkswagen", "ID.3", "TestVIN");
+        updatedAuto.setColor("GREEN");
+        updatedAuto.setOwner("ME");
+        when(autosRepository.findAutoByVin(anyString())).thenReturn(Optional.of(originalAuto));
+        when(autosRepository.save(any(Automobile.class))).thenReturn(updatedAuto);
+
+        Automobile returnAuto = autosService.updateAuto(originalAuto.getVin(), updatedAuto.getColor(), updatedAuto.getOwner());
+
+        assertThat(returnAuto).isNotNull();
+        assertEquals(updatedAuto, returnAuto);
     }
 
     @Test

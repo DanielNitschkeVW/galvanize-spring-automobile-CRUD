@@ -2,6 +2,8 @@ package de.volkswagen.f73.galvanize;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AutosService {
 
@@ -32,10 +34,17 @@ public class AutosService {
     }
 
     public Automobile getAuto(String vin) {
-        return null;
+        return autosRepository.findAutoByVin(vin).orElse(null);
     }
 
     public Automobile updateAuto(String vin, String color, String owner) {
+        Optional<Automobile> optionalAuto = autosRepository.findAutoByVin(vin);
+        if (optionalAuto.isPresent()) {
+            Automobile auto = optionalAuto.get();
+            auto.setColor(color);
+            auto.setOwner(owner);
+            return autosRepository.save(auto);
+        }
         return null;
     }
 
