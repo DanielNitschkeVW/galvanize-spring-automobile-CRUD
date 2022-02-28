@@ -20,11 +20,11 @@ public class AutosService {
     }
 
     public AutosList getAutosByColor(String color) {
-        return null;
+        return new AutosList(autosRepository.findByColor(color));
     }
 
     public AutosList getAutosByMake(String make) {
-        return null;
+        return new AutosList(autosRepository.findByMake(make));
     }
 
     public Automobile addAuto(Automobile automobile) {
@@ -40,13 +40,5 @@ public class AutosService {
     }
 
     public void deleteAuto(String vin) {
-    }
-
-    public AutosList findByColor(String color) {
-        return new AutosList(autosRepository.findByColor(color));
-    }
-
-    public AutosList findByMake(String make) {
-        return new AutosList(autosRepository.findByMake(make));
     }
 }

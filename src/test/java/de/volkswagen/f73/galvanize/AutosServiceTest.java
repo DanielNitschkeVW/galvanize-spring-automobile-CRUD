@@ -47,7 +47,7 @@ class AutosServiceTest {
     @Test
     void getAutos_byColor() {
         when(autosRepository.findByColor(anyString())).thenReturn(List.of(new Automobile(2000, "Volkswagen", "ID.3", "TestVIN")));
-        AutosList autosList = autosService.findByColor(anyString());
+        AutosList autosList = autosService.getAutosByColor(anyString());
         assertThat(autosList).isNotNull();
         assertThat(autosList.isEmpty()).isFalse();
     }
@@ -55,7 +55,7 @@ class AutosServiceTest {
     @Test
     void getAutosByMake() {
         when(autosRepository.findByMake(anyString())).thenReturn(List.of(new Automobile(2000, "Volkswagen", "ID.3", "TestVIN")));
-        AutosList autosList = autosService.findByMake(anyString());
+        AutosList autosList = autosService.getAutosByMake(anyString());
         assertThat(autosList).isNotNull();
         assertThat(autosList.isEmpty()).isFalse();
     }
