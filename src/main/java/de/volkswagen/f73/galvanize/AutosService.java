@@ -45,4 +45,8 @@ public class AutosService {
     public AutosList findByColor(String color) {
         return new AutosList(autosRepository.findByColor(color));
     }
+
+    public AutosList findByMake(String make) {
+        return new AutosList(autosRepository.findByMake(make));
+    }
 }
