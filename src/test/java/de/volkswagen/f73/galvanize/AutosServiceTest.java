@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -60,11 +61,16 @@ class AutosServiceTest {
     }
 
     @Test
-    void addAuto() {
+    void addAuto_returnAutomobile() {
+        Automobile auto = new Automobile(2000, "Volkswagen", "ID.3", "TestVIN");
+        when(autosRepository.addAuto(any(Automobile.class))).thenReturn(auto);
+        Automobile returnAuto = autosService.addAuto(auto);
+        assertThat(auto).isNotNull();
+        assertEquals(auto, returnAuto);
     }
 
     @Test
-    void getAuto() {
+    void getAuto_byVin() {
     }
 
     @Test
