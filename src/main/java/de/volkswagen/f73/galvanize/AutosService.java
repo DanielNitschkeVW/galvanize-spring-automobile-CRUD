@@ -41,4 +41,8 @@ public class AutosService {
 
     public void deleteAuto(String vin) {
     }
+
+    public AutosList findByColor(String color) {
+        return new AutosList(autosRepository.findByColor(color));
+    }
 }

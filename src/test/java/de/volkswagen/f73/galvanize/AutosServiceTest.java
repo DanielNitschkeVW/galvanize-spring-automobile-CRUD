@@ -44,7 +44,11 @@ class AutosServiceTest {
     }
 
     @Test
-    void getAutosByColor() {
+    void getAutos_byColor() {
+        when(autosRepository.findByColor(anyString())).thenReturn(List.of(new Automobile(2000, "Volkswagen", "ID.3", "TestVIN")));
+        AutosList autosList = autosService.findByColor(anyString());
+        assertThat(autosList).isNotNull();
+        assertThat(autosList.isEmpty()).isFalse();
     }
 
     @Test
