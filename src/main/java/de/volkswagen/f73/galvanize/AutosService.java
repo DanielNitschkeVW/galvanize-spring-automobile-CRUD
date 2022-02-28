@@ -1,5 +1,6 @@
 package de.volkswagen.f73.galvanize;
 
+import de.volkswagen.f73.galvanize.exceptions.AutomobileNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -49,5 +50,11 @@ public class AutosService {
     }
 
     public void deleteAuto(String vin) {
+        Optional<Automobile> optionalAuto = autosRepository.findAutoByVin(vin);
+        if (optionalAuto.isPresent()) {
+            autosRepository.delete(optionalAuto.get());
+        } else {
+            throw new AutomobileNotFoundException();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package de.volkswagen.f73.galvanize;
 
+import de.volkswagen.f73.galvanize.exceptions.AutomobileNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,9 +12,11 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -107,6 +110,20 @@ class AutosServiceTest {
     }
 
     @Test
-    void deleteAuto() {
+    void deleteAuto_byVin_exists() {
+        Automobile auto = new Automobile(2000, "Volkswagen", "ID.3", "TestVIN");
+        when(autosRepository.findAutoByVin(anyString())).thenReturn(Optional.of(auto));
+
+        autosService.deleteAuto(auto.getVin());
+
+        verify(autosRepository).delete(any(Automobile.class));
+    }
+
+    @Test
+    void deleteAuto_byVin_notExists() {
+        when(autosRepository.findAutoByVin(anyString())).thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(AutomobileNotFoundException.class)
+            .isThrownBy(() -> autosService.deleteAuto("I_DONT_EXIST"));
     }
 }
