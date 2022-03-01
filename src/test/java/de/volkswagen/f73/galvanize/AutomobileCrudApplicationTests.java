@@ -73,4 +73,14 @@ class AutomobileCrudApplicationTests {
         //response.getBody().getAutomobiles().forEach(System.out::println);
     }
 
+    @Test
+    void getAutos_searchByVin_returnsAuto() {
+        int randomCarIndex = rand.nextInt(NUM_AUTOMOBILES);
+        Automobile expectedCar = this.autosList.get(randomCarIndex);
+
+        ResponseEntity<Automobile> response = restTemplate.getForEntity("/api/autos/" + expectedCar.getVin(), Automobile.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(expectedCar);
+    }
 }
