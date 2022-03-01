@@ -75,7 +75,7 @@ class AutosServiceTest {
     @Test
     void addAuto_returnAutomobile() {
         Automobile auto = new Automobile(2000, "Volkswagen", "ID.3", "TestVIN");
-        when(autosRepository.addAuto(any(Automobile.class))).thenReturn(auto);
+        when(autosRepository.save(any(Automobile.class))).thenReturn(auto);
 
         Automobile returnAuto = autosService.addAuto(auto);
 
