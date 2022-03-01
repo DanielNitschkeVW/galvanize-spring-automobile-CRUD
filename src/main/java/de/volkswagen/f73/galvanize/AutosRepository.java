@@ -15,7 +15,5 @@ public interface AutosRepository extends JpaRepository<Automobile, Long> {
 
     List<Automobile> findByMake(String make);
 
-    Automobile addAuto(Automobile auto);
-
     Optional<Automobile> findAutoByVin(String anyString);
 }

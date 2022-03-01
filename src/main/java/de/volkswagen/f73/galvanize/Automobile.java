@@ -1,15 +1,34 @@
 package de.volkswagen.f73.galvanize;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import javax.persistence.*;
+import java.util.Date;
 import java.util.Objects;
 
+@Entity
+@Table(name = "automobiles")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Automobile {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "model_year")
     private int year;
+
     private String make;
     private String model;
     private String color;
+
+    @Column(name = "owner_name")
     private String owner;
     private String vin;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date purchaseDate;
 
     public Automobile(int year, String make, String model, String vin) {
         this.year = year;
@@ -17,6 +36,8 @@ public class Automobile {
         this.model = model;
         this.vin = vin;
     }
+
+    public Automobile() {}
 
     public int getYear() {
         return year;
