@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,5 +103,19 @@ class AutomobileCrudApplicationTests {
         assertThat(response.getBody().isEmpty()).isFalse();
         assertThat(response.getBody().getAutomobiles()).isNotNull();
         assertThat(response.getBody().getAutomobiles().size()).isEqualTo(expectedAutos.size());
+    }
+
+    @Test
+    void addAuto_returnsAddedAuto() {
+        Automobile auto = new Automobile(2022, "Volkswagen", "ID.3", "2022_VW_ID3");
+
+        HttpHeaders header = new HttpHeaders();
+        header.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        HttpEntity<Automobile> request = new HttpEntity<>(auto, header);
+
+        ResponseEntity<Automobile> response = restTemplate.postForEntity("/api/autos", request, Automobile.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(auto);
     }
 }
